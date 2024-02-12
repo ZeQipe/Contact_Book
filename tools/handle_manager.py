@@ -1,7 +1,5 @@
 from PySide6.QtWidgets import QListWidgetItem, QMessageBox
 from view.other_window.add_contact_window import AddDialogWindow
-from view.other_window.edit_contact_window import EditDialogWindow
-from view.other_window.other_message_window import approv_delete_window
 from tools.presenter import *
 
 
@@ -18,7 +16,9 @@ def handle_search(window, text):
 
 
 def handle_add_contact(window):
-    pass
+    dialog = AddDialogWindow()
+    dialog.save_clicked.connect(lambda: create_contact(window, dialog))
+    dialog.exec_()
 
 
 def handle_select_contact(window):
