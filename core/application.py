@@ -1,6 +1,8 @@
 import sys
 from PySide6.QtWidgets import QApplication
 from view.main_window import MainWindow
+from core.contact.container import ContainerContact
+from tools.loadsaver import load
 
 
 class App:
@@ -10,7 +12,11 @@ class App:
 
     @staticmethod
     def load_container():
-        pass
+        try:
+            return load()
+        except Exception as mess:
+            print(f'log: application: 18 line - {mess}')
+            return ContainerContact()
 
     def run_app(self):
         app = QApplication(sys.argv)
