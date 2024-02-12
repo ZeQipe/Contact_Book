@@ -50,3 +50,14 @@ def edit_contact(window, dialog):
     window.contact_info_widget.setText("Выберите контакт для просмотра информации")
 
     dialog.accept()
+
+
+def delete_contact(window):
+    if window.select_contact in window.container.get_contacts():
+        window.container.remove_contact(window.select_contact)
+
+    save(window.container)
+    window.update_contacts_list()
+    window.update_buttons_state(False)
+    window.selected_contact = None
+    window.contact_info_widget.setText("Выберите контакт для просмотра информации")

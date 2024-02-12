@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QListWidgetItem, QMessageBox
 from view.other_window.add_contact_window import AddDialogWindow
 from view.other_window.edit_contact_window import EditDialogWindow
+from view.other_window.other_message_window import approv_delete_window
 from tools.presenter import *
 
 
@@ -21,6 +22,7 @@ def handle_add_contact(window):
     dialog.save_clicked.connect(lambda: create_contact(window, dialog))
     dialog.exec_()
 
+
 def handle_select_contact(window):
     window.update_buttons_state(True)
     window.select_contact = window.contacts_list_widget.current_contact
@@ -34,12 +36,15 @@ def handle_edit_contact(window):
 
 
 def handle_delete_button_click(window):
-    pass
+    msg_box = approv_delete_window(window.select_contact)
+
+    if msg_box == QMessageBox.Ok:
+        delete_contact(window)
 
 
 def handle_import_contacts(window):
-    pass
+    show_error('Функция в разработке')
 
 
 def handle_export_contacts(window):
-    pass
+    show_error('Функция в разработке')
