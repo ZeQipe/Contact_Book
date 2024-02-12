@@ -21,9 +21,10 @@ def handle_add_contact(window):
     dialog.save_clicked.connect(lambda: create_contact(window, dialog))
     dialog.exec_()
 
-
 def handle_select_contact(window):
-    pass
+    window.update_buttons_state(True)
+    window.select_contact = window.contacts_list_widget.current_contact
+    window.contact_info_widget.set_contact_info(window.select_contact)
 
 
 def handle_edit_contact(window):
