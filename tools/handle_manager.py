@@ -1,5 +1,6 @@
 from PySide6.QtWidgets import QListWidgetItem, QMessageBox
 from view.other_window.add_contact_window import AddDialogWindow
+from view.other_window.edit_contact_window import EditDialogWindow
 from tools.presenter import *
 
 
@@ -26,7 +27,9 @@ def handle_select_contact(window):
 
 
 def handle_edit_contact(window):
-    pass
+    dialog = EditDialogWindow(window.select_contact)
+    dialog.save_clicked.connect(lambda: edit_contact(window, dialog))
+    dialog.exec_()
 
 
 def handle_delete_button_click(window):

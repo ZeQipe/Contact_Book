@@ -27,3 +27,26 @@ def create_contact(window, dialog):
     window.contact_info_widget.setText("Выберите контакт для просмотра информации")
 
     dialog.accept()
+
+
+def edit_contact(window, dialog):
+    data_collect = dialog.get_contact_data()
+
+    if not data_collect[0] or not data_collect[2]:
+        show_error("Поля 'Имя' и 'Номер' обязательны для заполнения.")
+        return
+
+    for contact in window.container.get_contacts():
+        if contact.get_first_name == data_collect[0] and contact.get_last_name == data_collect[1]:
+            show_error("Контакт с таким именем и фамилией уже существует.")
+            return
+
+    window.container.edit_contact(window.select_contact, dialog.get_contact_data())
+
+    save(window.container)
+    window.update_contacts_list()
+    window.update_buttons_state(False)
+    window.selected_contact = None
+    window.contact_info_widget.setText("Выберите контакт для просмотра информации")
+
+    dialog.accept()
