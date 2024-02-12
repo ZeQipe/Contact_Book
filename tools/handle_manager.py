@@ -48,4 +48,4 @@ def handle_import_contacts(window):
 
 
 def handle_export_contacts(window):
-    export_contacts(window)
+    export_contacts(window.container.get_contacts())

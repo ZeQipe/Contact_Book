@@ -30,33 +30,39 @@ def get_and_check_path(save_path: str):
     return save_path + '\\Contacts\\conbook.jcb'
 
 
-def export_contacts(window):
-    # Открываем диалоговое окно для выбора формата сохранения
-    file_types = "CSV files (*.csv);;VCF files (*.vcf)"
-    format_selected, _ = QFileDialog.getSaveFileName(None, "Выберите формат экспорта", "", file_types)
+def export_contacts(contacts):
+    file_path, _ = QFileDialog.getSaveFileName(None, "Выберите место сохранения", "",
+                                               "CSV Files (*.csv);;VCF Files (*.vcf)")
 
-    if format_selected:
-        # Открываем диалоговое окно для выбора места сохранения файла
-        file_path, _ = QFileDialog.getSaveFileName(None, "Выберите место сохранения", "", f"{format_selected};;All Files (*)")
+    if file_path:
+        try:
+            format_selected = "CSV" if file_path.endswith(".csv") else "VCF"
 
-        if file_path:
-            # Создаем файл и записываем в него информацию о контактах
-            try:
-                with open(file_path, "w", newline="", encoding="utf-8") as file:
-                    writer = csv.writer(file)
+            if format_selected == "CSV":
+                with open(file_path, "w", encoding="utf-8-sig") as file:
+                    file.write('Name;SurName;Number Phone; EMail Address;\n')
+                    for contact in contacts:
+                        file.write(
+                            f"{contact.get_first_name()};{contact.get_last_name()};{contact.get_phone_number()};{contact.get_email()};\n")
 
-                    writer.writerow(["Имя", "Фамилия", "Email", "Номер телефона"])
-                    for contact in window.container:
-                        writer.writerow([contact.first_name, contact.last_name, contact.email, contact.phone_number])
+            elif format_selected == "VCF":
+                with open(file_path, "w", encoding="utf-8") as file:
+                    for contact in contacts:
+                        file.write(f"BEGIN:VCARD\n")
+                        file.write(f"VERSION:3.0\n")
+                        file.write(f"N:{contact.get_last_name()};{contact.get_first_name()};;;\n")
+                        file.write(f"FN:{contact.get_first_name()} {contact.get_last_name()}\n")
+                        file.write(f"TEL;TYPE=CELL:{contact.get_phone_number()}\n")
+                        file.write(f"EMAIL;TYPE=WORK:{contact.get_email()}\n")
+                        file.write(f"END:VCARD\n")
 
-                QMessageBox.information(None, "Успех", "Контакты успешно экспортированы")
-            except Exception as e:
-                QMessageBox.critical(None, "Ошибка", f"Не удалось экспортировать контакты: {e}")
-        else:
-            QMessageBox.critical(None, "Ошибка", "Не выбрано место сохранения")
+            QMessageBox.information(None, "Успех", f"Контакты успешно экспортированы в формате {format_selected}")
+
+        except Exception as e:
+            QMessageBox.critical(None, "Ошибка", f"Не удалось экспортировать контакты: {e}")
+
     else:
-        QMessageBox.critical(None, "Ошибка", "Не выбран формат экспорта")
-
+        QMessageBox.critical(None, "Ошибка", "Не выбрано место сохранения")
 
 def import_contacts():
     pass
