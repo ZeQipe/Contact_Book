@@ -1,6 +1,8 @@
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import *
 from view.contacts_list_widget import ContactsListWidget
 from view.contact_info_widget import ContactInfoWidget
+from tools.handle_manager import *
 
 
 class MainWindow(QMainWindow):
@@ -62,5 +64,23 @@ class MainWindow(QMainWindow):
         import_button = QPushButton("Импорт")
         buttons_layout.addWidget(import_button)
 
+    def update_contacts_list(self, contacts: list = None):
+        self.contacts_list_widget.clear()
 
+        if contacts:
+            for contact in contacts:
+                item = QListWidgetItem(str(contact))
+                item.setData(Qt.UserRole, contact)
+                self.contacts_list_widget.addItem(item)
+        else:
+            self.contacts_list_widget.clear()
+            contacts = self.container.get_contacts()
+            for contact in contacts:
+                item = QListWidgetItem(str(contact))
+                item.setData(Qt.UserRole, contact)
+                self.contacts_list_widget.addItem(item)
+            self.update_buttons_state(False)
 
+    def update_buttons_state(self, enable):
+        self.edit_button.setEnabled(enable)
+        self.delete_button.setEnabled(enable)
