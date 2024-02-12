@@ -64,6 +64,17 @@ class MainWindow(QMainWindow):
         import_button = QPushButton("Импорт")
         buttons_layout.addWidget(import_button)
 
+        #Коннекты для событий
+        self.search_input.textChanged.connect(lambda: handle_search(self, self.search_input.text()))
+        add_contact_button.clicked.connect(lambda: handle_add_contact(self))
+        self.contacts_list_widget.contact_selected.connect(lambda: handle_select_contact(self))
+        self.edit_button.clicked.connect(lambda: handle_edit_contact(self))
+        self.delete_button.clicked.connect(lambda: handle_delete_button_click(self))
+        import_button.clicked.connect(lambda: handle_import_contacts(self))
+        export_button.clicked.connect(lambda: handle_export_contacts(self))
+
+        self.update_contacts_list()
+
     def update_contacts_list(self, contacts: list = None):
         self.contacts_list_widget.clear()
 
