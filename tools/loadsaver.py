@@ -1,5 +1,7 @@
 import os
 import pickle
+import csv
+from PySide6.QtWidgets import QFileDialog, QMessageBox
 
 
 def load():
@@ -28,8 +30,32 @@ def get_and_check_path(save_path: str):
     return save_path + '\\Contacts\\conbook.jcb'
 
 
-def export_contacts():
-    pass
+def export_contacts(window):
+    # Открываем диалоговое окно для выбора формата сохранения
+    file_types = "CSV files (*.csv);;VCF files (*.vcf)"
+    format_selected, _ = QFileDialog.getSaveFileName(None, "Выберите формат экспорта", "", file_types)
+
+    if format_selected:
+        # Открываем диалоговое окно для выбора места сохранения файла
+        file_path, _ = QFileDialog.getSaveFileName(None, "Выберите место сохранения", "", f"{format_selected};;All Files (*)")
+
+        if file_path:
+            # Создаем файл и записываем в него информацию о контактах
+            try:
+                with open(file_path, "w", newline="", encoding="utf-8") as file:
+                    writer = csv.writer(file)
+
+                    writer.writerow(["Имя", "Фамилия", "Email", "Номер телефона"])
+                    for contact in window.container:
+                        writer.writerow([contact.first_name, contact.last_name, contact.email, contact.phone_number])
+
+                QMessageBox.information(None, "Успех", "Контакты успешно экспортированы")
+            except Exception as e:
+                QMessageBox.critical(None, "Ошибка", f"Не удалось экспортировать контакты: {e}")
+        else:
+            QMessageBox.critical(None, "Ошибка", "Не выбрано место сохранения")
+    else:
+        QMessageBox.critical(None, "Ошибка", "Не выбран формат экспорта")
 
 
 def import_contacts():

@@ -3,6 +3,7 @@ from view.other_window.add_contact_window import AddDialogWindow
 from view.other_window.edit_contact_window import EditDialogWindow
 from view.other_window.other_message_window import approv_delete_window
 from tools.presenter import *
+from tools.loadsaver import export_contacts
 
 
 def handle_search(window, text):
@@ -47,4 +48,4 @@ def handle_import_contacts(window):
 
 
 def handle_export_contacts(window):
-    show_error('Функция в разработке')
+    export_contacts(window)
