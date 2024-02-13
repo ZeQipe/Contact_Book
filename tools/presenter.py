@@ -20,11 +20,7 @@ def create_contact(window, dialog):
     data_collect = [first_name, last_name, phone, email]
     window.container.add_contact(data_collect)
 
-    save(window.container)
-    window.update_contacts_list()
-    window.update_buttons_state(False)
-    window.selected_contact = None
-    window.contact_info_widget.setText("Выберите контакт для просмотра информации")
+    update(window)
 
     dialog.accept()
 
@@ -43,11 +39,7 @@ def edit_contact(window, dialog):
 
     window.container.edit_contact(window.select_contact, dialog.get_contact_data())
 
-    save(window.container)
-    window.update_contacts_list()
-    window.update_buttons_state(False)
-    window.selected_contact = None
-    window.contact_info_widget.setText("Выберите контакт для просмотра информации")
+    update(window)
 
     dialog.accept()
 
@@ -56,6 +48,10 @@ def delete_contact(window):
     if window.select_contact in window.container.get_contacts():
         window.container.remove_contact(window.select_contact)
 
+    update(window)
+
+
+def update(window):
     save(window.container)
     window.update_contacts_list()
     window.update_buttons_state(False)
