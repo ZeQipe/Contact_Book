@@ -2,6 +2,11 @@ from view.other_window.other_message_window import show_error
 from tools.loadsaver import save
 
 
+"""
+Preparing the information received from the handler for transmission to the logic for further implementation.
+"""
+
+
 def create_contact(window, dialog):
     first_name = dialog.first_name_input.text().strip()
     last_name = dialog.last_name_input.text().strip()
@@ -9,11 +14,13 @@ def create_contact(window, dialog):
     email = dialog.email_input.text().strip()
 
     if not first_name or not phone:
+        print('log: presenter: create_contact:17l: required fields are not filled in')
         show_error("Поля 'Имя' и 'Номер' обязательны для заполнения.")
         return
 
     for contact in window.container.get_contacts():
         if contact.get_first_name == first_name and contact.get_last_name == last_name:
+            print('log: presenter: create_contact:23l: A file with the same name and surname already exists')
             show_error("Контакт с таким именем и фамилией уже существует.")
             return
 
@@ -29,10 +36,12 @@ def edit_contact(window, dialog):
     data_collect = dialog.get_contact_data()
 
     if not data_collect[0] or not data_collect[2]:
+        print('log: presenter: edit_contact:39l: required fields are not filled in')
         show_error("Поля 'Имя' и 'Номер' обязательны для заполнения.")
         return
 
     for contact in window.container.get_contacts():
+        print('log: presenter: edit_contact:44l: A file with the same name and surname already exists')
         if contact.get_first_name == data_collect[0] and contact.get_last_name == data_collect[1]:
             show_error("Контакт с таким именем и фамилией уже существует.")
             return

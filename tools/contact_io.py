@@ -3,7 +3,12 @@ import os
 from PySide6.QtWidgets import QFileDialog, QMessageBox
 
 
-def export_contacts(contacts):
+def export_contacts(contacts) -> None:
+    """
+    Implements saving contacts in VCF or CSV format to a user-specified directory.
+    :param contacts: object class ContainerContact
+    :return:
+    """
     file_path, _ = QFileDialog.getSaveFileName(None, "Выберите место сохранения", "",
                                                "CSV Files (*.csv);;VCF Files (*.vcf)")
 
@@ -21,12 +26,20 @@ def export_contacts(contacts):
 
         except Exception as e:
             QMessageBox.critical(None, "Ошибка", f"Не удалось экспортировать контакты: {e}")
+            print(f'log: contact_io: export_contacts: 29l: {str(e)}')
 
     else:
+        print(f'log: contact_io: export_contacts: 92l: Не выбрано место сохранения')
         QMessageBox.critical(None, "Ошибка", "Не выбрано место сохранения")
 
 
-def export_vcf(contacts, file_path):
+def export_vcf(contacts, file_path) -> None:
+    """
+    implements a record in VCF format
+    :param contacts:
+    :param file_path:
+    :return:
+    """
     with open(file_path, "w", encoding="utf-8") as file:
         for contact in contacts:
             file.write(f"BEGIN:VCARD\n")
@@ -38,15 +51,27 @@ def export_vcf(contacts, file_path):
             file.write(f"END:VCARD\n")
 
 
-def export_csv(contacts, file_path):
+def export_csv(contacts, file_path) -> None:
+    """
+    implements a record in CSV format
+    :param contacts:
+    :param file_path:
+    :return:
+    """
     with open(file_path, "w", encoding="utf-8-sig") as file:
         file.write('Name;SurName;Number Phone; EMail Address;\n')
         for contact in contacts:
             file.write(
-                f"{contact.get_first_name()};{contact.get_last_name()};{contact.get_phone_number()};{contact.get_email()};\n")
+                f"{contact.get_first_name()};{contact.get_last_name()};"
+                f"{contact.get_phone_number()};{contact.get_email()};\n")
 
 
 def import_contacts(window):
+    """
+    implements reading data from a CSV or VCF file, creates objects of the Contact class and adds them to the container.
+    :param window:
+    :return:
+    """
     file_path, _ = QFileDialog.getOpenFileName(None, "Выберите файл для импорта", "",
                                                "CSV Files (*.csv);;VCF Files (*.vcf)")
 
@@ -67,14 +92,21 @@ def import_contacts(window):
 
             except Exception as e:
                 show_error(f"Ошибка чтения файла {str(e)}")
-                print(str(e))
+                print(f'log: contact_io: import_contacts: 92l: {str(e)}')
         else:
-            show_error("Неверный формат файла\nПожалуйста, выберите файл с расширением CSV или VCF.")
+            print(f'log: contact_io: import_contacts: 94l: Неверный формат файла')
+            show_error("\nПожалуйста, выберите файл с расширением CSV или VCF.")
     else:
+        print(f'log: contact_io: import_contacts: 97l: user press cancel')
         return
 
 
 def parse_csv_file(file_path):
+    """
+    A parser that processes data in CSV format;
+    :param file_path:
+    :return: Returns a container with information about each contact.
+    """
     contacts = []
     with open(file_path, 'r', encoding='utf-8') as file:
         csv_data = file.read()
@@ -89,17 +121,23 @@ def parse_csv_file(file_path):
             email = data[3]
 
             if not phone_number.replace('+', '').isdigit():
-                print(f"Ошибка в строке {line}: номер телефона содержит недопустимые символы")
+                print(f'log: contact_io: parse_csv_file: 123l: Ошибка в строке {line}: номер телефона содержит '
+                      f'недопустимые символы')
                 continue
 
             contacts.append([first_name, last_name, phone_number, email])
         else:
-            print("Ошибка в формате данных:", data)
+            print(f'log: contact_io: parse_csv_file: 128l: Ошибка в формате данных:{data}')
 
     return contacts
 
 
 def parse_vcf_file(file_path):
+    """
+    A parser that processes data in CSV format;
+    :param file_path:
+    :return: Returns a container with information about each contact.
+    """
     contacts = []
     with open(file_path, 'r', encoding='utf-8') as file:
         vcf_data = file.read()
@@ -143,18 +181,7 @@ def parse_vcf_file(file_path):
         else:
             i += 1
 
+    if not contacts:
+        print(f'log: contact_io: parse_vcf_file: 183l: file is empty')
+
     return contacts
-
-def extract_vcard_value(vcard, key):
-    start_index = vcard.find(key + ':') + len(key + ':')
-    end_index = vcard.find('\n', start_index)
-    return vcard[start_index:end_index].strip()
-
-
-def parse_contact_info(contact_row):
-    if 'first_name' in contact_row and 'phone_number' in contact_row:
-        contact_info = [contact_row['first_name'], contact_row.get('last_name', ''),
-                        contact_row['phone_number'], contact_row.get('email', '')]
-        return contact_info
-    else:
-        return None

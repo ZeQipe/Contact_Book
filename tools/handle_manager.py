@@ -6,9 +6,17 @@ from tools.presenter import *
 from tools.contact_io import export_contacts, import_contacts
 
 
-def handle_search(window, text):
+"""
+Event handlers of the main window are implemented here, each event has its own handler.
+Accepts a link to the main window to interact with it and its state.
+"""
+
+
+def handle_search(window):
+    text = window.search_input.text()
     filtered_contacts = [contact for contact in window.container.get_contacts() if
-                         text.lower() in contact.get_first_name().lower() or text.lower() in contact.get_last_name().lower()]
+                         text.lower() in contact.get_first_name().lower() or
+                         text.lower() in contact.get_last_name().lower()]
 
     window.update_contacts_list(filtered_contacts)
 

@@ -8,6 +8,11 @@ from tools.handle_manager import *
 class MainWindow(QMainWindow):
     def __init__(self, container):
         super().__init__()
+        self.delete_button = None
+        self.edit_button = None
+        self.contact_info_widget = None
+        self.contacts_list_widget = None
+        self.search_input = None
         self.container = container
         self.setWindowTitle("Contact Book")
         self.setFixedSize(620, 400)
@@ -64,8 +69,8 @@ class MainWindow(QMainWindow):
         import_button = QPushButton("Импорт")
         buttons_layout.addWidget(import_button)
 
-        #Коннекты для событий
-        self.search_input.textChanged.connect(lambda: handle_search(self, self.search_input.text()))
+        # Коннекты для событий
+        self.search_input.textChanged.connect(lambda: handle_search(self))
         add_contact_button.clicked.connect(lambda: handle_add_contact(self))
         self.contacts_list_widget.contact_selected.connect(lambda: handle_select_contact(self))
         self.edit_button.clicked.connect(lambda: handle_edit_contact(self))
